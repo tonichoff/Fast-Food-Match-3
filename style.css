@@ -1,85 +1,43 @@
 body {
-    background-image:  url("images/background.jpg");
-    background-repeat: repeat-x;
-    background-color: darkred;
+    background:  url("images/fon.png") no-repeat;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+    background-color: sandybrown;
 }
 
 .gameField {
     position: absolute;
-    background-color: white;
+    background-color: #F4EDD0;
     border:  3px outset darkred;
     vertical-align: bottom;
     width: 500px;
     height: 500px;
-    left: 400px;
-    top: 10px;
-}
-#buttonNewGame {
-    background-color:  white;
-    border: 3px solid  darkred;
-    border-radius: 8px;
-    padding: 14px 84px;
-    position: absolute;
-    top: 550px;
-    left: 500px;
-    font: 30px Comic Sans MS;
-    color: darkred;
-}
-#buttonNewGame:hover {
-    cursor: pointer;
-}
-#buttonNewGame:active {
-    color: red;
-    transform: translateY(4px);
-}
-#buttonNewGame:focus {
-    outline: none;
-}
-
-.stone1, .stone2, .stone3, .stone4, .stone5, .stone6, .stone7, .stone8, .stone9, .stone10 {
+    left: 600px;
+    top: 155px;
     position: inherit;
-    width: 50px;
-    height: 50px;
-}
-
-#GameField :hover {
     cursor: pointer;
 }
-
-.stone1 {
-    background-image: url("images/e1.png");
+#button1, #button2, #button3{
+    border-radius: 15px;
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    top: 598px;
+    color: sandybrown;
+}
+#button1 {
+    background-image: url("images/b1.png");
+    left: 38px;
 }
 
-.stone2 {
-    background-image: url("images/e2.png");
+#button2 {
+    background-image: url("images/b2.png");
+    left: 155px;
 }
 
-.stone3 {
-    background-image: url("images/e3.png");
-}
-
-.stone4 {
-    background-image: url("images/e4.png");
-}
-.stone5 {
-    background-image: url("images/e5.png");
-}
-
-.stone6 {
-    background-image: url("images/e6.png");
-}
-
-.stone7 {
-    background-image: url("images/e7.png");
-}
-
-.stone8 {
-    background-image: url("images/e8.png");
-}
-.stone9 {
-    background-image: url("images/e9.png");
-}
-
-.stone10 {
-    background-image: url("images/e10.png");
+#button3 {
+    background-image: url("images/b3.png");
+    left: 275px;
 }
