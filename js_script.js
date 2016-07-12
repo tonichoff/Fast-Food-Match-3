@@ -8,11 +8,15 @@
     var tilecolors = ["stone1", "stone2", "stone3","stone4","stone5", "stone6", "stone7","stone8","stone9", "stone10"];
     var buttonNewGame = document.getElementById("buttonNewGame");
     var GameField;
+    var isGenerationField = true;
+    var score = 0;
 
-        buttonNewGame.onclick = function (){
+        buttonNewGame.onclick = function () {
+            if(!isGenerationField)
+                isGenerationField = true;
             if (GameField == null)
                 GameField = document.getElementById("GameField");
-            else
+            else 
                 GameField.innerHTML = "";
             GameField.className = "gameField";
             for (var i = 0; i < columns; i++) {
@@ -39,6 +43,10 @@
 
     var column_new, row_new;
     function cellClick(event) {
+        if(isGenerationField) {
+            isGenerationField = false;
+            score = 0;
+        }
         var event = window.event,
             el = event.target  || event.srcElement,
             column_old = el.id.charAt(0)
@@ -58,6 +66,7 @@
                 return(true);
             }
         }
+        scoreMatches()
         column_new = column_old;
         row_new = row_old;
         return(false);
@@ -104,6 +113,7 @@
 
                 if (checkmach) {
                     if (matchlength >= 3) {
+                        score += ((matchlength * 1 - 3) * 50 + 100) * (i + 1);
                         matches.push({ column: i + 1 - matchlength, row: j, length: matchlength, horizontal: true});
                     }
                     matchlength = 1;
@@ -125,6 +135,7 @@
                 }
                 if (checkmach) {
                     if (matchlength >= 3) {
+                        score += ((matchlength * 1 - 3) * 50 + 100) * (i + 1);
                         matches.push({ column: i, row:j + 1 - matchlength, length: matchlength, horizontal: false});
                     }
                     matchlength = 1;
@@ -217,3 +228,7 @@
               mouseSwap(move.column1, move.row1, move.column2, move.row2);
           }
       };
+      
+        function scoreMatches() {
+            alert(score);
+        };
