@@ -23,6 +23,7 @@ window.onload = function() {
                 clearTimeout(id);
             };
     }());
+    
 
     var canvas = document.getElementById("GameField");
     canvas.className = "gameField";
