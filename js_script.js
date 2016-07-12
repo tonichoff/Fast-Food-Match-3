@@ -40,8 +40,8 @@
     var column_new, row_new;
     function cellClick(event) {
         var event = window.event,
-            el = event.target,
-            column_old = el.id.charAt(0),
+            el = event.target  || event.srcElement,
+            column_old = el.id.charAt(0)
             row_old = el.id.charAt(2);
         if ((column_old != column_new) || (row_old != row_new)) {
             if(Math.abs(row_old - row_new) +  Math.abs(column_old - column_new) == 1) {
