@@ -41,7 +41,24 @@ body {
     background-image: url("images/b3.png");
     left: 275px;
 }
+
 .actbut3{
     background-image: url("images/actb3.png");
     left: 275px;
+}
+
+#score {
+    position : absolute;
+    top: 615px;
+    left: 450px;
+    font : 30px Verdana;
+    color: #F4EDD0;
+}
+
+#score_title {
+    position : absolute;
+    top: 570px;
+    left: 420px;
+    font : 30px Verdana;
+    color: #F4EDD0;
 }
