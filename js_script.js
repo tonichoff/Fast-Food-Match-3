@@ -28,6 +28,10 @@ window.onload = function() {
     var canvas = document.getElementById("GameField");
     canvas.className = "gameField";
     var context = canvas.getContext("2d");
+    var lineTimer = document.getElementById("LineTimer");
+    var startTimerWidth = lineTimer.offsetWidth;
+    var startTime = 10;
+    var time;
     var tiles = [];
     var matches = [];
     var moves = [];
@@ -94,7 +98,7 @@ window.onload = function() {
             if (moves.length <= 0) {
                 gameover = true;
             }
-            if (isaibot) {
+            if ((isaibot) && (!gameover)) {
                 animationtime += dt;
                 if (animationtime > animationtimetotal) {
                     aibot();
@@ -168,12 +172,17 @@ window.onload = function() {
             drawMoves();
         }
         if (gameover) {
-            context.fillStyle = "rgba(0, 0, 0, 0.8)";
+            isaibot = false;
+            but3.className = 'but3';
+            showmoves = false;
+            context.fillStyle = "rgba(255, 165, 100, 0.9)";
             context.fillRect(1, 1, canvas.width-2, canvas.height-2);
             context.fillStyle = "#ffffff";
             context.font = "24px ms sans serif";
-            var textdim = context.measureText("Game Over!");
-            context.fillText(text, (field_width - textdim.width)/2, field_height / 2 + 10);
+            textdim = context.measureText("Game Over!");
+            context.fillText("Game Over!", (field_width - textdim.width)/2, field_height / 2 + 10);
+            textdim = context.measureText("Очки: " + score.toString());
+            context.fillText("Очки: " + score.toString(), (field_width - textdim.width)/2, field_height / 2 + 140);
         }
     }
     
@@ -240,6 +249,11 @@ window.onload = function() {
     function newGame() {
         score = 0;
         gamestate = 1;
+        isaibot = false;
+        but3.className = 'but3';
+        showmoves = false;
+        time = setInterval(animationLineTimer, 1000);
+        lineTimer.style.width = startTimerWidth + "px";
         gameover = false;
         createField();
         findMoves();
@@ -453,6 +467,7 @@ window.onload = function() {
     }
 
     but1.onclick = function () {
+        clearInterval(time);
         newGame();
     }
     but2.onclick = function () {
@@ -463,5 +478,15 @@ window.onload = function() {
         if (isaibot) but3.className = 'actbut3';
         else but3.className = 'but3';
     }
+    
+    function animationLineTimer() {
+        var width = lineTimer.offsetWidth;
+        width = width - (startTimerWidth / startTime) ;
+        lineTimer.style.width = width + "px";
+        console.log(lineTimer.offsetWidth);
+        if (lineTimer.offsetWidth <= 0)
+            gameover = true;
+    }
+    
     init();
 };
