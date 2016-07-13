@@ -23,7 +23,9 @@ window.onload = function() {
                 clearTimeout(id);
             };
     }());
-        var canvas = document.getElementById("GameField");
+
+
+    var canvas = document.getElementById("GameField");
     canvas.className = "gameField";
     var context = canvas.getContext("2d");
     var tiles = [];
@@ -174,8 +176,9 @@ window.onload = function() {
             context.fillText(text, (field_width - textdim.width)/2, field_height / 2 + 10);
         }
     }
-
+    
     function drawTiles() { //рисуем плитки
+        document.getElementById('score').innerHTML = score;
         for (var i = 0; i < columns; i++) {
             for (var j = 0; j < rows; j++) {
                 var shift = tiles[i][j].shift;
@@ -217,6 +220,7 @@ window.onload = function() {
             context.drawImage(emg2, tilex2, tiley2);
         }
     }
+
     // отрисовать подсказки
     function drawMoves() {
         for (var i = 0; i < moves.length; i++) {
