@@ -481,10 +481,10 @@ window.onload = function() {
     
     function animationLineTimer() {
         var width = lineTimer.offsetWidth;
-        width = width - (startTimerWidth / startTime) ;
+        width = width - (startTimerWidth / startTime);
         lineTimer.style.width = width + "px";
         console.log(lineTimer.offsetWidth);
-        if (lineTimer.offsetWidth <= 0)
+        if (lineTimer.offsetWidth < (startTimerWidth / startTime))
             gameover = true;
     }
     
