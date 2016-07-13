@@ -14,8 +14,8 @@ body {
     vertical-align: bottom;
     width: 500px;
     height: 500px;
-    left: 400px;
-    top: 50px;
+    left: 600px;
+    top: 155px;
     cursor: pointer;
 }
 #button1, #button2, #button3{
@@ -29,15 +29,15 @@ body {
 
 #button1 {
     background-image: url("images/b1.png");
-    left: 485px;
+    left: 38px;
 }
 
 #button2 {
     background-image: url("images/b2.png");
-    left: 605px;
+    left: 155px;
 }
 
 #button3 {
     background-image: url("images/b3.png");
-    left: 725px;
+    left: 275px;
 }
