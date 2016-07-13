@@ -23,9 +23,7 @@ window.onload = function() {
                 clearTimeout(id);
             };
     }());
-    
-
-    var canvas = document.getElementById("GameField");
+        var canvas = document.getElementById("GameField");
     canvas.className = "gameField";
     var context = canvas.getContext("2d");
     var tiles = [];
