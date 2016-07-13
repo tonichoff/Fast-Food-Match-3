@@ -51,8 +51,11 @@ window.onload = function() {
     var showmoves = false, isaibot = false, gameover = false; //флаги кнопок и конца игры и мыши
 
     var but1 = document.getElementById("button1"); //переменать поле
+    but1.className = 'but1';
     var but2 = document.getElementById("button2"); //подсказки
+    but2.className = 'but2';
     var but3 = document.getElementById("button3"); //бот
+    but3.className = 'but3';
 
     function init() {
         canvas.addEventListener("mousedown", onMouseDown);
@@ -453,6 +456,8 @@ window.onload = function() {
     }
     but3.onclick = function () {
         isaibot = !isaibot;
+        if (isaibot) but3.className = 'actbut3';
+        else but3.className = 'but3';
     }
     init();
 };
