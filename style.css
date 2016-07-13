@@ -16,7 +16,6 @@ body {
     height: 500px;
     left: 600px;
     top: 155px;
-    position: inherit;
     cursor: pointer;
 }
 #button1, #button2, #button3{
