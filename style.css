@@ -18,7 +18,7 @@ body {
     top: 155px;
     cursor: pointer;
 }
-.but1, .but2, .but3, .actbut3{
+.reset_button, .hint_button, .ai_button, .active_ai_button{
     border-radius: 15px;
     position: absolute;
     width: 90px;
@@ -27,22 +27,22 @@ body {
     color: sandybrown;
 }
 
-.but1 {
+.reset_button {
     background-image: url("images/b1.png");
     left: 38px;
 }
 
-.but2 {
+.hint_button {
     background-image: url("images/b2.png");
     left: 155px;
 }
 
-.but3 {
+.ai_button {
     background-image: url("images/b3.png");
     left: 275px;
 }
 
-.actbut3{
+.active_ai_button{
     background-image: url("images/actb3.png");
     left: 275px;
 }
