@@ -30,7 +30,7 @@ window.onload = function() {
     var context = canvas.getContext("2d");
     var lineTimer = document.getElementById("LineTimer");
     var startTimerWidth = lineTimer.offsetWidth;
-    var startTime = 10;
+    var startTime = 110;
     var time;
     var tiles = [];
     var matches = [];
