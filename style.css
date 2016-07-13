@@ -18,7 +18,7 @@ body {
     top: 155px;
     cursor: pointer;
 }
-#button1, #button2, #button3{
+.but1, .but2, .but3, .actbut3{
     border-radius: 15px;
     position: absolute;
     width: 90px;
@@ -27,17 +27,38 @@ body {
     color: sandybrown;
 }
 
-#button1 {
+.but1 {
     background-image: url("images/b1.png");
     left: 38px;
 }
 
-#button2 {
+.but2 {
     background-image: url("images/b2.png");
     left: 155px;
 }
 
-#button3 {
+.but3 {
     background-image: url("images/b3.png");
     left: 275px;
+}
+
+.actbut3{
+    background-image: url("images/actb3.png");
+    left: 275px;
+}
+
+#score {
+    position : absolute;
+    top: 615px;
+    left: 450px;
+    font : 30px Verdana;
+    color: #F4EDD0;
+}
+
+#score_title {
+    position : absolute;
+    top: 570px;
+    left: 420px;
+    font : 30px Verdana;
+    color: #F4EDD0;
 }
