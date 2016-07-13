@@ -25,6 +25,7 @@ body {
     height: 90px;
     top: 598px;
     color: sandybrown;
+    outline: none;
 }
 
 .reset_button {

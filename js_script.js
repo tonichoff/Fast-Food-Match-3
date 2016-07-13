@@ -163,9 +163,10 @@ window.onload = function() {
         if (showmoves && matches.length <= 0 && gamestate == 'waiting') {
             drawMoves();
         }
+        drawTiles();
         if (gameover) {
             isaibot = false;
-            but3.className = 'but3';
+            ai_button.className = 'ai_button';
             showmoves = false;
             context.fillStyle = "rgba(255, 165, 100, 0.9)";
             context.fillRect(1, 1, canvas.width-2, canvas.height-2);
@@ -501,7 +502,13 @@ window.onload = function() {
     setInterval(randomizeAnimationCook, 5000);
 
     function randomizeAnimationCook() {
-        cookAnimation.src = "images/" + Math.round(1 + Math.random()) + ".gif";
+        var randomInt = Math.round(1 + Math.random() * 9);
+        if (randomInt == 1)
+            cookAnimation.src = "images/3.gif";
+        else if (randomInt <= 5)
+            cookAnimation.src = "images/2.gif";
+        else
+            cookAnimation.src = "images/1.gif";
     }
 
     init();
