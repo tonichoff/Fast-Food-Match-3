@@ -1,5 +1,6 @@
 window.onload = function() {
-    (function() { // копипаста из инета для анимации чтоб норм работало во всех браузерах
+    // для анимации чтоб нормально работало во всех браузерах, скопировано из статьи http://html5.by/blog/what-is-requestanimationframe/
+    (function() {
         var lastTime = 0;
         var vendors = ['ms', 'moz', 'webkit', 'o'];
         for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
@@ -24,45 +25,39 @@ window.onload = function() {
             };
     }());
 
-
     var canvas = document.getElementById("GameField");
     canvas.className = "gameField";
     var context = canvas.getContext("2d");
+
     var lineTimer = document.getElementById("LineTimer");
     var startTimerWidth = lineTimer.offsetWidth;
-    var startTime = 110;
+    var startTime = 120;
     var presentTime = startTime;
     var time;
+
     var tiles = [];
     var matches = [];
     var moves = [];
-    var columns = 10;
-    var rows = 10;
+    var columns = 10,  rows = 10;
     var tilewidth = 50;
     var tileheight = 50;
     var tileTypeContaner = ["images/1.png", "images/2.png", "images/3.png", "images/4.png", "images/5.png", "images/6.png"];
-
-    var lastframe = 0;// Сроки и кадры в секунду
-    var fpstime = 0;
-    var framecount = 0;
-    var fps = 0;
-
-    var currentmove = { column1: 0, row1: 0, column2: 0, row2: 0 }; // Текущее движениe
-    var gamestate = 0; //Игровые состояния:0 - инициализуется, 1 - готова к ходу игрока, 2 - ищет и уничтожает матчи
     var score = 0;
 
-    var animationstate = 0;// анимационные переменные
-    var animationtime = 0;
-    var animationtimetotal = 0.3; //константа шага
+    var lastframe = 0, fpstime = 0, framecount = 0, fps = 0;// для анимации, время и кадры в секунду
+    var animation_time = 0, animation_interval = 0.3; //текущее время и через которое делать шаг
 
-    var showmoves = false, isaibot = false, gameover = false; //флаги кнопок и конца игры и мыши
+    var currentmove = { column1: 0, row1: 0, column2: 0, row2: 0 };
+    var gamestate = 'no init';
 
-    var but1 = document.getElementById("button1"); //переменать поле
-    but1.className = 'but1';
-    var but2 = document.getElementById("button2"); //подсказки
-    but2.className = 'but2';
-    var but3 = document.getElementById("button3"); //бот
-    but3.className = 'but3';
+    var showmoves = false, isaibot = false, gameover = false, isswap = false; //флаги кнопок и конца игры и мыши
+
+    var reset_button = document.getElementById("button_reset"); //переменать поле
+    reset_button.className = 'reset_button';
+    var hint_button = document.getElementById("button_hint"); //подсказки
+    hint_button.className = 'hint_button';
+    var ai_button = document.getElementById("button_ai"); //бот
+    ai_button.className = 'ai_button';
 
     function init() {
         canvas.addEventListener("mousedown", onMouseDown);
@@ -81,7 +76,50 @@ window.onload = function() {
         update(t);
         draw();
     }
+    var  animation_function = animation_remove_matchs;
 
+    function animation_remove_matchs(dt) {
+            findMatches();
+            if (matches.length > 0) {
+                for (var i=0; i<matches.length; i++) {
+                    score += ((matches[i].length * 1 - 3) * 50 + 100) * (i + 1);
+                }
+                markMatches();
+                removeMatches();
+                isswap = false;
+                animation_function = animation_shift_tiles;
+            } else {
+                gamestate = 'waiting';
+            }
+    }
+    function animation_shift_tiles(dt) {
+            shiftTiles();
+            isswap = false;
+            animation_function = animation_remove_matchs;
+            findMatches();
+            if (matches.length <= 0) {
+                gamestate = 'waiting';
+            }
+    }
+
+    function animation_swap_tiles(dt) {
+            swap(currentmove.column1, currentmove.row1, currentmove.column2, currentmove.row2);
+            if (findMatches()) {
+                isswap = false;
+                animation_function = animation_remove_matchs;
+                gamestate = 'processing';
+            } else {
+                isswap = true;
+                animation_function = animation_back_swap_tiles;
+            }
+            findMoves();
+            findMatches();
+    }
+
+    function animation_back_swap_tiles(dt) {
+            swap(currentmove.column1, currentmove.row1, currentmove.column2, currentmove.row2);
+            gamestate = 'waiting';
+    }
     // Обновление состояния игры
     function update(t) {
         var dt = (t - lastframe) / 1000;
@@ -93,70 +131,23 @@ window.onload = function() {
         }
         fpstime += dt;
         framecount++;
+        animation_time += dt;
 
-        if (gamestate == 1) { // Игра готова для ввода игрока
-
-            if (moves.length <= 0) {
-                gameover = true;
-            }
-            if ((isaibot) && (!gameover)) {
-                animationtime += dt;
-                if (animationtime > animationtimetotal) {
-                    aibot();
-                    animationtime = 0;
-                }
-            }
-        } else if (gamestate == 2) { // Игра занята разрешением и анимацией матчей
-            animationtime += dt;
-            if (animationstate == 0) { //уничтожение матчей
-                if (animationtime > animationtimetotal) {
-                    findMatches();
-                    if (matches.length > 0) {
-                        for (var i=0; i<matches.length; i++) {
-                            score += ((matches[i].length * 1 - 3) * 50 + 100) * (i + 1);
-                        }
-                        removeMatches();
-                        animationstate = 1;
-                    } else {
-                        gamestate = 1;
-                    }
-                    animationtime = 0;
-                }
-
-            } else if (animationstate == 1) { //падение плиток
-                if (animationtime > animationtimetotal) {
-                    shiftTiles();
-                    animationstate = 0;
-                    animationtime = 0;
-
-                    findMatches();
-                    if (matches.length <= 0) {
-                        gamestate = 1;
-                    }
-                }
-            } else if (animationstate == 2) { //свап плиток
-                if (animationtime > animationtimetotal) {
-                    swap(currentmove.column1, currentmove.row1, currentmove.column2, currentmove.row2);
-                    if (findMatches()) {
-                        animationstate = 0;
-                        animationtime = 0;
-                        gamestate = 2;
-                    } else {
-                        animationstate = 3;
-                        animationtime = 0;
-                    }
-                    findMoves();
-                    findMatches();
-                }
-            } else if (animationstate == 3) { //свап назад
-                if (animationtime > animationtimetotal) {
-                    swap(currentmove.column1, currentmove.row1, currentmove.column2, currentmove.row2);
-                    gamestate = 1;
-                }
-            }
-            findMoves();
-            findMatches();
+        if (moves.length <= 0) {
+            gameover = true;
         }
+        if (animation_time > animation_interval) {
+            if (gamestate == 'waiting') { // Игра ждет действий игрока
+                if ((isaibot) && (!gameover)) {
+                    aibot();
+                }
+            } else if (gamestate == 'processing') { // Игра занята разрешением и анимацией матчей
+                animation_function(dt);
+            }
+            animation_time = 0;
+        }
+        findMoves();
+        findMatches();
     }
 
     function draw() { //рисуем поле
@@ -169,7 +160,7 @@ window.onload = function() {
         var field_height = rows * tileheight;
 
         drawTiles();
-        if (showmoves && matches.length <= 0 && gamestate == 1) {
+        if (showmoves && matches.length <= 0 && gamestate == 'waiting') {
             drawMoves();
         }
         if (gameover) {
@@ -187,13 +178,13 @@ window.onload = function() {
         }
     }
     
-    function drawTiles() { //рисуем плитки
+    function drawTiles() { // рисуем плитки
         document.getElementById('score').innerHTML = score;
         for (var i = 0; i < columns; i++) {
             for (var j = 0; j < rows; j++) {
                 var shift = tiles[i][j].shift;
                 var tilex = i * tilewidth;
-                var tiley = (j + (animationtime / animationtimetotal) * shift) * tileheight;
+                var tiley = (j + (animation_time / animation_interval) * shift) * tileheight;
                 if (tiles[i][j].type >= 0) {
                     var emg = new Image();
                     emg.src = tileTypeContaner[tiles[i][j].type];
@@ -207,28 +198,30 @@ window.onload = function() {
                 }
             }
         }
-        // своп анимация
-        if (gamestate == 2 && (animationstate == 2 || animationstate == 3)) {
-            var shiftx = currentmove.column2 - currentmove.column1;
-            var shifty = currentmove.row2 - currentmove.row1;
-
-            var tilex1 = (currentmove.column1 + (animationtime / animationtimetotal) * shiftx)* tilewidth;
-            var tiley1 = (currentmove.row1 + (animationtime / animationtimetotal) * shifty) * tileheight;
-            var emg1 = new Image();
-            emg1.src = tileTypeContaner[tiles[currentmove.column1][currentmove.row1].type];
-
-            var tilex2 = (currentmove.column2 - (animationtime / animationtimetotal) * shiftx) * tilewidth;
-            var tiley2 = (currentmove.row2 - (animationtime / animationtimetotal) * shifty) * tileheight;
-            var emg2 = new Image();
-            emg2.src = tileTypeContaner[tiles[currentmove.column2][currentmove.row2].type];
-
-            context.fillStyle = "#F4EDD0";
-            context.fillRect(currentmove.column1* tilewidth, currentmove.row1 * tilewidth, tilewidth, tileheight);
-            context.fillRect(currentmove.column2* tilewidth, currentmove.row2 * tilewidth, tilewidth, tileheight);
-
-            context.drawImage(emg1, tilex1, tiley1);
-            context.drawImage(emg2, tilex2, tiley2);
+        if (gamestate == 'processing' && isswap) {
+            drawSwap();
         }
+    }
+    function drawSwap() {
+        var dshiftx = (currentmove.column2 - currentmove.column1) * (animation_time / animation_interval);
+        var dshifty = (currentmove.row2 - currentmove.row1) * (animation_time / animation_interval);
+
+        var tilex1 = (currentmove.column1 + dshiftx)* tilewidth;
+        var tiley1 = (currentmove.row1 + dshifty) * tileheight;
+        var emg1 = new Image();
+        emg1.src = tileTypeContaner[tiles[currentmove.column1][currentmove.row1].type];
+
+        var tilex2 = (currentmove.column2 - dshiftx) * tilewidth;
+        var tiley2 = (currentmove.row2 - dshifty) * tileheight;
+        var emg2 = new Image();
+        emg2.src = tileTypeContaner[tiles[currentmove.column2][currentmove.row2].type];
+
+        context.fillStyle = "#F4EDD0";
+        context.fillRect(currentmove.column1* tilewidth, currentmove.row1 * tilewidth, tilewidth, tileheight);
+        context.fillRect(currentmove.column2* tilewidth, currentmove.row2 * tilewidth, tilewidth, tileheight);
+
+        context.drawImage(emg1, tilex1, tiley1);
+        context.drawImage(emg2, tilex2, tiley2);
     }
 
     // отрисовать подсказки
@@ -249,9 +242,9 @@ window.onload = function() {
 
     function newGame() {
         score = 0;
-        gamestate = 1;
+        gamestate = 'waiting';
         isaibot = false;
-        but3.className = 'but3';
+        ai_button.className = 'ai_button';
         showmoves = false;
         time = setInterval(animationLineTimer, 1000);
         lineTimer.style.width = startTimerWidth + "px";
@@ -281,6 +274,7 @@ window.onload = function() {
     function resolveMatches() {
         findMatches();
         while (matches.length > 0) {
+            markMatches();
             removeMatches();
             shiftTiles();
             findMatches();
@@ -369,7 +363,9 @@ window.onload = function() {
         matches = []
     }
 
-    function removeMatches() {
+
+
+    function markMatches(){
         for (var i=0; i<matches.length; i++) {
             var h = 0;
             var v = 0;
@@ -379,6 +375,9 @@ window.onload = function() {
                 else v++;
             }
         }
+    }
+
+    function removeMatches() {
         for (var i=0; i<columns; i++) {
             var shift = 0;
             for (var j=rows-1; j>=0; j--) {
@@ -391,6 +390,7 @@ window.onload = function() {
             }
         }
     }
+
     function shiftTiles() {
         for (var i=0; i<columns; i++) {
             for (var j=rows-1; j>=0; j--) {
@@ -421,9 +421,10 @@ window.onload = function() {
 
     function animationSwap(c1, r1, c2, r2) {
         currentmove = {column1: c1, row1: r1, column2: c2, row2: r2};
-        animationstate = 2;
+        isswap = true;
+        animation_function = animation_swap_tiles;
         animationtime = 0;
-        gamestate = 2;
+        gamestate = 'processing';
     }
 
     function getMousePos(canvas, e) {
@@ -445,13 +446,14 @@ window.onload = function() {
     var column_new = -1, row_new = -1;
 
     function onMouseDown(e) {
+        if (!gameover){
         var pos = getMousePos(canvas, e);
         var mt = getMouseTile(pos);
 
         var column_old = mt.x;
         var row_old = mt.y;
 
-        if ((column_old != column_new) || (row_old != row_new) || (column_new != -1 ) ||(row_new != -1)|| (column_old != -1 ) ||(row_old != -1)) {
+        if ((column_old != column_new) || (row_old != row_new) || (column_new != -1 ) || (row_new != -1) || (column_old != -1 ) || (row_old != -1)) {
             if (Math.abs(row_old - row_new) + Math.abs(column_old - column_new) == 1) {
                 animationSwap(column_old, row_old, column_new, row_new);
                 if (findMatches()) {
@@ -467,18 +469,19 @@ window.onload = function() {
         column_new = column_old;
         row_new = row_old;
     }
+    }
 
-    but1.onclick = function () {
+    reset_button.onclick = function () {
         clearInterval(time);
         newGame();
     }
-    but2.onclick = function () {
+    hint_button.onclick = function () {
         showmoves = !showmoves;
     }
-    but3.onclick = function () {
+    ai_button.onclick = function () {
         isaibot = !isaibot;
-        if (isaibot) but3.className = 'actbut3';
-        else but3.className = 'but3';
+        if (isaibot) ai_button.className = 'active_ai_button';
+        else ai_button.className = 'ai_button';
     }
     
     function animationLineTimer() {
