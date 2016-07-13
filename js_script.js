@@ -171,7 +171,7 @@ window.onload = function() {
             context.fillStyle = "rgba(255, 165, 100, 0.9)";
             context.fillRect(1, 1, canvas.width-2, canvas.height-2);
             context.fillStyle = "#ffffff";
-            context.font = "24px ms sans serif";
+            context.font = "24px Comic Sans MS";
             textdim = context.measureText("Game Over!");
             context.fillText("Game Over!", (field_width - textdim.width)/2, field_height / 2 + 10);
             textdim = context.measureText("Очки: " + score.toString());
