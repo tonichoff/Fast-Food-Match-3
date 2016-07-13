@@ -31,20 +31,20 @@ window.onload = function() {
 
     var lineTimer = document.getElementById("LineTimer");
     var startTimerWidth = lineTimer.offsetWidth;
-    var startTime = 30;
+    var startTime;
     var presentTime = startTime;
     var time;
 
     var tiles = [];
     var matches = [];
     var moves = [];
-    var lvl = 0;
+    var lvl;
     var columns = 10,  rows = 10;
     var tilewidth = 50;
     var tileheight = 50;
     var tileTypeContaner = ["images/1.png", "images/2.png", "images/3.png", "images/4.png", "images/5.png", "images/6.png"];
-    var lvl_type = 4;
-    var score = 0, win_score = 3000;
+    var lvl_type;
+    var score = 0, win_score;
 
     var lastframe = 0, fpstime = 0, framecount = 0, fps = 0;// для анимации, время и кадры в секунду
     var animation_time = 0, animation_interval = 0.3; //текущее время и через которое делать шаг
@@ -64,6 +64,10 @@ window.onload = function() {
     function init() {
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("mouseup", onMouseUp);
+        lvl = 0;
+        lvl_type = 4;
+        win_score = 1500;
+        startTime = 30;
         for (var i=0; i<columns; i++) {
             tiles[i] = [];
             for (var j=0; j<rows; j++) {
@@ -159,34 +163,35 @@ window.onload = function() {
         context.fillStyle = "#fef190";
         context.fillRect(1, 1, canvas.width-2, canvas.height-2);
 
-        var field_width = columns * tilewidth;
-        var field_height = rows * tileheight;
-
         if (showmoves && matches.length <= 0 && gamestate == 'waiting') {
             drawMoves();
         }
         drawTiles();
-
-        if (gameover) {
-            isaibot = false;
-            ai_button.className = 'ai_button';
-            showmoves = false;
-            context.fillStyle = 'rgba(255, 165, 100, 0.9)';
-            context.fillRect(1, 1, canvas.width-2, canvas.height-2);
-            context.fillStyle = 'rgba(255, 240, 145, 1)';
-            context.strokeStyle = '#8B0000';
-            context.strokeStyle.fontsize(5);
-            context.fillRect(170, 186, canvas.width - 340, canvas.height - 364);
-            context.strokeRect(170, 186, canvas.width - 340, canvas.height - 364);
-            context.fillStyle = "#8B0000";
-            context.font = "24px Comic Sans MS";
-            textdim = context.measureText("Game Over!");
-            context.fillText("Game Over!", (field_width - textdim.width)/2, field_height / 2 - 10);
-            textdim = context.measureText("Очки: " + score.toString());
-            context.fillText("Очки: " + score.toString(), (field_width - textdim.width)/2, field_height / 2 + 30);
+        if (gameover) drawGameTotal('GameOver');
+        if (gamewin) drawGameTotal('Уровень пройден!');
+    }
+    function drawGameTotal(s){
+        isaibot = false;
+        ai_button.className = 'ai_button';
+        showmoves = false;
+        context.fillStyle = 'rgba(255, 165, 100, 0.9)';
+        context.fillRect(1, 1, canvas.width-2, canvas.height-2);
+        context.fillStyle = 'rgba(255, 240, 145, 1)';
+        context.strokeStyle = '#8B0000';
+        context.strokeStyle.fontsize(5);
+        context.fillRect(140, 186, canvas.width - 280, canvas.height - 344);
+        context.strokeRect(140, 186, canvas.width - 280, canvas.height - 344);
+        context.fillStyle = "#8B0000";
+        context.font = "24px Comic Sans MS";
+        textdim = context.measureText(s);
+        context.fillText(s, ((columns * tilewidth) - textdim.width)/2, (rows * tileheight) / 2 - 10);
+        textdim = context.measureText("Очки: " + score.toString());
+        context.fillText("Очки: " + score.toString(), ((columns * tilewidth) - textdim.width)/2, (rows * tileheight) / 2 + 30);
+        if (s == 'Уровень пройден!'){
+            textdim = context.measureText('Next >>');
+            context.fillText('Next >>', ((columns * tilewidth) - textdim.width)/2, (rows * tileheight) / 2 + 60);
         }
     }
-    
     function drawTiles() { // рисуем плитки
         document.getElementById('score').innerHTML = score;
         for (var i = 0; i < columns; i++) {
@@ -250,7 +255,7 @@ window.onload = function() {
 
 
     function newLvl() {
-        lvl++;
+        if (gamewin) lvl++;
         score = 0;
         gamestate = 'waiting';
         isaibot = false;
@@ -441,8 +446,8 @@ window.onload = function() {
     function getMousePos(canvas, e) {
         var rect = canvas.getBoundingClientRect();
         return {
-            x: Math.round((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width),
-            y: Math.round((e.clientY - rect.top)/(rect.bottom - rect.top)*canvas.height)
+            x: Math.round((e.clientX - rect.left)/(rect.right - rect.left) * canvas.width),
+            y: Math.round((e.clientY - rect.top)/(rect.bottom - rect.top) * canvas.height)
         };
     }
 
@@ -462,7 +467,8 @@ window.onload = function() {
     }
     function onMouseUp(e) {
         var mup = getMouseTile(getMousePos(canvas, e));
-        if (!gameover && !gamewin && mdown.x == mup.x && mdown.y == mup.y) {
+        if ((gameover || gamewin) && mdown.x != -1 && mup.x != -1 && mdown.y != -1 && mup.y != -1) newLvl();
+        else if (mdown.x == mup.x && mdown.y == mup.y) {
             var  column_old = mup.x;
             var row_old = mup.y;
             if ((column_new != -1 ) && (row_new != -1) && (column_old != -1 ) && (row_old != -1)) {
