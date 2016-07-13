@@ -31,6 +31,7 @@ window.onload = function() {
     var lineTimer = document.getElementById("LineTimer");
     var startTimerWidth = lineTimer.offsetWidth;
     var startTime = 110;
+    var presentTime = startTime;
     var time;
     var tiles = [];
     var matches = [];
@@ -255,6 +256,7 @@ window.onload = function() {
         time = setInterval(animationLineTimer, 1000);
         lineTimer.style.width = startTimerWidth + "px";
         gameover = false;
+        presentTime = startTime;
         createField();
         findMoves();
         findMatches();
@@ -480,13 +482,24 @@ window.onload = function() {
     }
     
     function animationLineTimer() {
-        var width = lineTimer.offsetWidth;
-        width = width - (startTimerWidth / startTime);
-        lineTimer.style.width = width + "px";
-        console.log(lineTimer.offsetWidth);
-        if (lineTimer.offsetWidth < (startTimerWidth / startTime))
+        presentTime--;
+        if (presentTime == 0) {
+            lineTimer.style.width = "0px";
             gameover = true;
+        }
+        else {
+            var reductionWidth = (startTimerWidth / startTime);
+            lineTimer.style.width = reductionWidth * presentTime + "px";
+        }
+
     }
-    
+
+    var cookAnimation = document.getElementById("cookAnimation");
+    setInterval(randomizeAnimationCook, 5000);
+
+    function randomizeAnimationCook() {
+        cookAnimation.src = "images/" + Math.round(1 + Math.random()) + ".gif";
+    }
+
     init();
 };

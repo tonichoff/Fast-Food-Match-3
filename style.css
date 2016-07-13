@@ -74,3 +74,8 @@ body {
     transition: 1000ms;
 }
 
+#cookAnimation {
+    position: absolute;
+    left: 80px;
+    top: 50px;
+}
