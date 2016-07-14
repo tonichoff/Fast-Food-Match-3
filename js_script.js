@@ -44,7 +44,6 @@ window.onload = function() {
     var columns = 10,  rows = 10;
     var tilewidth = 50;
     var tileheight = 50;
-    var tileTypeContaner = ["images/1.png", "images/2.png", "images/3.png", "images/4.png", "images/5.png", "images/6.png"];
     var lvl_type;
     var score = 0, win_score;
 
@@ -91,46 +90,46 @@ window.onload = function() {
     var  animation_function = animation_remove_matchs;
 
     function animation_remove_matchs(dt) {
-            findMatches();
-            if (matches.length > 0) {
-                for (var i=0; i<matches.length; i++) {
-                    score += ((matches[i].length * 1 - 3) * 50 + 100) * (i + 1);
-                }
-                markMatches();
-                removeMatches();
-                isswap = false;
-                animation_function = animation_shift_tiles;
-            } else {
-                gamestate = 'waiting';
+        findMatches();
+        if (matches.length > 0) {
+            for (var i=0; i<matches.length; i++) {
+                score += ((matches[i].length * 1 - 3) * 50 + 100) * (i + 1);
             }
+            markMatches();
+            removeMatches();
+            isswap = false;
+            animation_function = animation_shift_tiles;
+        } else {
+            gamestate = 'waiting';
+        }
     }
     function animation_shift_tiles(dt) {
-            shiftTiles();
-            isswap = false;
-            animation_function = animation_remove_matchs;
-            findMatches();
-            if (matches.length <= 0) {
-                gamestate = 'waiting';
-            }
+        shiftTiles();
+        isswap = false;
+        animation_function = animation_remove_matchs;
+        findMatches();
+        if (matches.length <= 0) {
+            gamestate = 'waiting';
+        }
     }
 
     function animation_swap_tiles(dt) {
-            swap(currentmove.column1, currentmove.row1, currentmove.column2, currentmove.row2);
-            if (findMatches()) {
-                isswap = false;
-                animation_function = animation_remove_matchs;
-                gamestate = 'processing';
-            } else {
-                isswap = true;
-                animation_function = animation_back_swap_tiles;
-            }
-            findMoves();
-            findMatches();
+        swap(currentmove.column1, currentmove.row1, currentmove.column2, currentmove.row2);
+        if (findMatches()) {
+            isswap = false;
+            animation_function = animation_remove_matchs;
+            gamestate = 'processing';
+        } else {
+            isswap = true;
+            animation_function = animation_back_swap_tiles;
+        }
+        findMoves();
+        findMatches();
     }
 
     function animation_back_swap_tiles(dt) {
-            swap(currentmove.column1, currentmove.row1, currentmove.column2, currentmove.row2);
-            gamestate = 'waiting';
+        swap(currentmove.column1, currentmove.row1, currentmove.column2, currentmove.row2);
+        gamestate = 'waiting';
     }
     // Обновление состояния игры
     function update(t) {
@@ -206,7 +205,7 @@ window.onload = function() {
                 var tiley = (j + (animation_time / animation_interval) * shift) * tileheight;
                 if (tiles[i][j].type >= 0) {
                     var emg = new Image();
-                    emg.src = tileTypeContaner[tiles[i][j].type];
+                    emg.src = 'images/' + (tiles[i][j].type + 1).toString() + '.png';
                     context.drawImage(emg, tilex, tiley);
                 }
                 if ((column_new != -1 ) ||(row_new != -1)) {
@@ -228,12 +227,12 @@ window.onload = function() {
         var tilex1 = (currentmove.column1 + dshiftx)* tilewidth;
         var tiley1 = (currentmove.row1 + dshifty) * tileheight;
         var emg1 = new Image();
-        emg1.src = tileTypeContaner[tiles[currentmove.column1][currentmove.row1].type];
+        emg1.src = 'images/' + (tiles[currentmove.column1][currentmove.row1].type + 1).toString() + '.png';
 
         var tilex2 = (currentmove.column2 - dshiftx) * tilewidth;
         var tiley2 = (currentmove.row2 - dshifty) * tileheight;
         var emg2 = new Image();
-        emg2.src = tileTypeContaner[tiles[currentmove.column2][currentmove.row2].type];
+        emg2.src = 'images/' + (tiles[currentmove.column2][currentmove.row2].type + 1).toString() + '.png';
 
         context.fillStyle = "#fef190";
         context.fillRect(currentmove.column1* tilewidth, currentmove.row1 * tilewidth, tilewidth, tileheight);
@@ -258,7 +257,6 @@ window.onload = function() {
         }
     }
 
-
     function newLvl() {
         if (time != null)
             clearInterval(time);
@@ -266,7 +264,6 @@ window.onload = function() {
         totalScore += score + bonusTime * 50;
         bonusTime = 0;
         score = 0;
-        console.log("totalScore:" + totalScore);
         gamestate = 'waiting';
         isaibot = false;
         ai_button.className = 'ai_button';
@@ -286,7 +283,7 @@ window.onload = function() {
         while (!done) {
             for (var i=0; i<columns; i++) {
                 for (var j=0; j<rows; j++) {
-                    tiles[i][j].type = Math.floor(Math.random() * tileTypeContaner.length);
+                    tiles[i][j].type = Math.floor(Math.random() * lvl_type);
                 }
             }
             resolveMatches();
@@ -421,7 +418,7 @@ window.onload = function() {
         for (var i=0; i<columns; i++) {
             for (var j=rows-1; j>=0; j--) {
                 if (tiles[i][j].type == -1) {
-                    tiles[i][j].type = Math.floor(Math.random() * tileTypeContaner.length);
+                    tiles[i][j].type = Math.floor(Math.random() * lvl_type);
                 } else {
                     var shift = tiles[i][j].shift;
                     if (shift > 0) {
@@ -473,7 +470,7 @@ window.onload = function() {
     var column_new = -1, row_new = -1;
     var mdown;
     function onMouseDown(e) {
-       mdown = getMouseTile(getMousePos(canvas, e));
+        mdown = getMouseTile(getMousePos(canvas, e));
     }
     function onMouseUp(e) {
         var mup = getMouseTile(getMousePos(canvas, e));
@@ -504,6 +501,7 @@ window.onload = function() {
         }
     }
     reset_button.onclick = function () {
+        clearInterval(time);
         newLvl();
     }
     hint_button.onclick = function () {
