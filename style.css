@@ -9,17 +9,14 @@ body {
 
 .gameField {
     position: absolute;
-    background-color: #fef190;
     border:  5px outset darkred;
     stroke-width: 5px;
     vertical-align: bottom;
     width: 500px;
     height: 500px;
-    left: 650px;
-    top: 155px;
+    left: 630px;
+    top: 170px;
     cursor: pointer;
-    font-size: 60px;
-    font-family: Comic Sans MS;
 }
 .reset_button, .hint_button, .ai_button, .active_ai_button{
     border-radius: 15px;
@@ -52,17 +49,17 @@ body {
 }
 
 #score {
-    position : relative;
-    top: 533px;
-    left: 450px;
+    position : absolute;
+    top: 625px;
+    left: 430px;
     font-size: 45px;
     font-family: Comic Sans MS;
     color: #fef190;
 }
 
 #score_title {
-    position : relative;
-    top: 560px;
+    position : absolute;
+    top: 570px;
     left: 420px;
     font-size: 60px;
     font-family: Comic Sans MS;
