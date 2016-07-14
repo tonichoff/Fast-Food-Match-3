@@ -547,7 +547,7 @@ window.onload = function() {
         else if (presentTime == Math.floor(startTime / 2) + 4 || presentTime == 4)
             cookAnimation.src == "images/3.gif";
         else if (presentTime == 0 || gamewin)
-            cookAnimation.src == "images/3.gif";;
+            cookAnimation.src == "images/3.gif";
         else
             cookAnimation.src = "images/2.gif";
     }
