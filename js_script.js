@@ -32,7 +32,9 @@ window.onload = function() {
     var lineTimer = document.getElementById("LineTimer");
     var startTimerWidth = lineTimer.offsetWidth;
     var startTime;
-    var presentTime = startTime;
+    var presentTime;
+    var bonusTime;
+    var totalScore;
     var time;
 
     var tiles = [];
@@ -67,7 +69,10 @@ window.onload = function() {
         lvl = 0;
         lvl_type = 4;
         win_score = 1500;
+        totalScore = 0;
         startTime = 30;
+        presentTime = 0;
+        bonusTime = 0;
         for (var i=0; i<columns; i++) {
             tiles[i] = [];
             for (var j=0; j<rows; j++) {
@@ -255,8 +260,13 @@ window.onload = function() {
 
 
     function newLvl() {
+        if (time != null)
+            clearInterval(time);
         if (gamewin) lvl++;
+        totalScore += score + bonusTime * 50;
+        bonusTime = 0;
         score = 0;
+        console.log("totalScore:" + totalScore);
         gamestate = 'waiting';
         isaibot = false;
         ai_button.className = 'ai_button';
@@ -264,7 +274,7 @@ window.onload = function() {
         time = setInterval(animationLineTimer, 1000);
         lineTimer.style.width = startTimerWidth + "px";
         gameover = false;
-        gamewin = false
+        gamewin = false;
         presentTime = startTime;
         createField();
         findMoves();
@@ -494,7 +504,6 @@ window.onload = function() {
         }
     }
     reset_button.onclick = function () {
-        clearInterval(time);
         newLvl();
     }
     hint_button.onclick = function () {
@@ -508,6 +517,12 @@ window.onload = function() {
     
     function animationLineTimer() {
         presentTime--;
+        if (gamewin) {
+            clearInterval(time);
+            bonusTime = presentTime;
+            console.log("bonus:" + bonusTime);
+            return;
+        }
         if (presentTime == 0) {
             lineTimer.style.width = "0px";
             gameover = true;
@@ -516,7 +531,7 @@ window.onload = function() {
             var reductionWidth = (startTimerWidth / startTime);
             lineTimer.style.width = reductionWidth * presentTime + "px";
         }
-
+        console.log("time:" + presentTime);
     }
 
     var cookAnimation = document.getElementById("cookAnimation");
