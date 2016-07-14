@@ -67,7 +67,7 @@ window.onload = function() {
         canvas.addEventListener("mouseup", onMouseUp);
         lvl = 0;
         lvl_type = 4;
-        win_score = 1500;
+        win_score = 1000;
         totalScore = 0;
         startTime = 30;
         presentTime = 0;
@@ -264,12 +264,17 @@ window.onload = function() {
         totalScore += score + bonusTime * 50;
         bonusTime = 0;
         score = 0;
+        win_score += 50;
         gamestate = 'waiting';
         isaibot = false;
         ai_button.className = 'ai_button';
         showmoves = false;
-        time = setInterval(animationLineTimer, 1000);
+        time = setInterval(animationTimer, 1000);
         lineTimer.style.width = startTimerWidth + "px";
+        var goalTitle = document.getElementById("goalTitle");
+        goalTitle.innerHTML = "Наберите " + win_score + " очков";
+        var levelTitle = document.getElementById("levelTitle");
+        levelTitle.innerHTML = "Уровень №" + lvl;
         gameover = false;
         gamewin = false;
         presentTime = startTime;
@@ -513,12 +518,16 @@ window.onload = function() {
         else ai_button.className = 'ai_button';
     }
     
-    function animationLineTimer() {
+    function animationTimer() {
+        animationCook();
+        if (presentTime == 0) {
+            clearInterval(time)
+        }
         presentTime--;
         if (gamewin) {
             clearInterval(time);
             bonusTime = presentTime;
-            console.log("bonus:" + bonusTime);
+            lineTimer.style.width = "0px";
             return;
         }
         if (presentTime == 0) {
@@ -529,21 +538,18 @@ window.onload = function() {
             var reductionWidth = (startTimerWidth / startTime);
             lineTimer.style.width = reductionWidth * presentTime + "px";
         }
-        console.log("time:" + presentTime);
     }
 
-    var cookAnimation = document.getElementById("cookAnimation");
-    setInterval(randomizeAnimationCook, 5000);
-
-    function randomizeAnimationCook() {
-        var randomInt = Math.round(1 + Math.random() * 9);
-        if (randomInt == 1)
-            cookAnimation.src = "images/3.gif";
-        else if (randomInt <= 5)
-            cookAnimation.src = "images/2.gif";
-        else
+    function animationCook() {
+        var cookAnimation = document.getElementById("cookAnimation");
+        if (presentTime == startTime)
             cookAnimation.src = "images/1.gif";
+        else if (presentTime == Math.floor(startTime / 2) + 4 || presentTime == 4)
+            cookAnimation.src == "images/3.gif";
+        else if (presentTime == 0 || gamewin)
+            cookAnimation.src == "images/3.gif";;
+        else
+            cookAnimation.src = "images/2.gif";
     }
-
     init();
 };
