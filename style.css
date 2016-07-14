@@ -71,7 +71,7 @@ body {
     background-color: darkred;
     border-width: 10px;
     border-radius: 30px;
-    width: 1060px;
+    width: 1100px;
     height: 42px;
     left: 85px;
     top: 75px;
@@ -81,9 +81,9 @@ body {
     position: absolute;
     background-color: #fef190;
     border-radius: 30px;
-    width: 1040px;
+    width: 1060px;
     height: 22px;
-    left: 95px;
+    left: 100px;
     top: 85px;
     transition: 1000ms;
 }
@@ -92,4 +92,50 @@ body {
     position: absolute;
     left: 80px;
     top: 50px;
+}
+
+#goalTitle {
+    position: absolute;
+    width: 500px;
+    height: 50px;
+    left: 615px;
+    top: 133px;
+    text-align: center;
+    font-family: "Comic Sans MS";
+    font-size: 25px;
+    color: #fef190;
+}
+
+#nameTitle {
+    position: absolute;
+    top: 8px;
+    left: 195px;
+    width: 300px;
+    height: 40px;
+    background-color: #fef290;
+    font-family: "Comic Sans MS";
+    font-size: 30px;
+    color: darkred;
+    border: solid;
+    border-width: 10px;
+    border-radius: 30px;
+    border-color: #506d13;
+    text-align: center;
+}
+
+#levelTitle {
+    position: absolute;
+    top: 8px;
+    left: 780px;
+    width: 300px;
+    height: 40px;
+    background-color: #fef290;
+    font-family: "Comic Sans MS";
+    font-size: 30px;
+    color: darkred;
+    border: solid;
+    border-width: 10px;
+    border-radius: 30px;
+    border-color: #506d13;
+    text-align: center;
 }
